@@ -14,20 +14,22 @@ app.use(express.urlencoded({ extended: true }))
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://googlekeep-frontend.vercel.app/',
+  'https://googlekeep-frontend.vercel.app',
   process.env.CLIENT_URL
 ].filter(Boolean)
 
 const corsOptions = {
   origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true)
     } else {
+      console.warn(`CORS blocked origin: ${origin}`)
       callback(new Error('Not allowed by CORS'))
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }
 app.use(cors(corsOptions))
